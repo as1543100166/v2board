@@ -54,6 +54,7 @@ class OrderService
                 break;
             case 'reset_price':
                 $this->buyByResetTraffic();
+                $this->user->transfer_enable = $plan->transfer_enable * 1073741824;
                 break;
             default:
                 $this->buyByPeriod($order, $plan);

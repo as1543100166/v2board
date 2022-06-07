@@ -112,32 +112,41 @@ class ResetTraffic extends Command
             $expireDay = date('m-d', $item->expired_at);
             $today = date('m-d');
             if ($expireDay === $today) {
-                array_push($users, $item->id);
+                array_push($users, $item);
             }
         }
-        User::whereIn('id', $users)->update([
-            'u' => 0,
-            'd' => 0
-        ]);
+        foreach ($users as $user){
+            User::where('id', $user->id)->update([
+                'u' => 0,
+                'd' => 0,
+                'transfer_enable' => Plan::find($user->plan_id)->transfer_enable * 1073741824
+            ]);
+        }
     }
 
     private function resetByYearFirstDay($builder):void
     {
         if ((string)date('md') === '0101') {
-            $builder->update([
-                'u' => 0,
-                'd' => 0
-            ]);
+            foreach ($builder->get() as $item) {
+                User::where('id', $item->id)->update([
+                    'u' => 0,
+                    'd' => 0,
+                    'transfer_enable' => Plan::find($item->plan_id)->transfer_enable * 1073741824
+                ]);
+            }
         }
     }
 
     private function resetByMonthFirstDay($builder):void
     {
         if ((string)date('d') === '01') {
-            $builder->update([
-                'u' => 0,
-                'd' => 0
-            ]);
+            foreach ($builder->get() as $item) {
+                User::where('id', $item->id)->update([
+                    'u' => 0,
+                    'd' => 0,
+                    'transfer_enable' => Plan::find($item->plan_id)->transfer_enable * 1073741824
+                ]);
+            }
         }
     }
 
@@ -149,16 +158,19 @@ class ResetTraffic extends Command
             $expireDay = date('d', $item->expired_at);
             $today = date('d');
             if ($expireDay === $today) {
-                array_push($users, $item->id);
+                array_push($users, $item);
             }
 
             if (($today === $lastDay) && $expireDay >= $lastDay) {
-                array_push($users, $item->id);
+                array_push($users, $item);
             }
         }
-        User::whereIn('id', $users)->update([
-            'u' => 0,
-            'd' => 0
-        ]);
+        foreach ($users as $user){
+            User::where('id', $user->id)->update([
+                'u' => 0,
+                'd' => 0,
+                'transfer_enable' => Plan::find($user->plan_id)->transfer_enable * 1073741824
+            ]);
+        }
     }
 }
